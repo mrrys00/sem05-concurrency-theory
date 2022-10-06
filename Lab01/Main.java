@@ -9,8 +9,8 @@ public class Main {
 
     private static void notSynchronizedSolution() throws InterruptedException {
         Counter counterObject = new Counter();
-        Thread inc = new Thread(counterObject, "inc");
-        Thread dec = new Thread(counterObject, "dec");
+        Thread inc = new MyThread(true, false, counterObject);
+        Thread dec = new MyThread(false, false, counterObject);
 
         inc.start();
         dec.start();
@@ -22,9 +22,9 @@ public class Main {
     }
 
     private static void synchronizedSolution() throws InterruptedException {
-        SynchronizedCounter counterObject = new SynchronizedCounter();
-        Thread inc = new Thread(counterObject, "inc");
-        Thread dec = new Thread(counterObject, "dec");
+        Counter counterObject = new Counter();
+        Thread inc = new MyThread(true, true, counterObject);
+        Thread dec = new MyThread(false, true, counterObject);
 
         inc.start();
         dec.start();
