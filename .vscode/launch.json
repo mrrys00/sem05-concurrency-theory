@@ -34,5 +34,14 @@
         //     "projectName": "sem05-concurrency-theory_87f72959",
         //     "args": "prod"
         // }
+        ,
+        {
+            "type": "java",
+            "name": "Lab02",
+            "request": "launch",
+            "mainClass": "Lab02",
+            "projectName": "sem05-concurrency-theory_87f72959",
+            "args": "bin"
+        }
     ]
 }
