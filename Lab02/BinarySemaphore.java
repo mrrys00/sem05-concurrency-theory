@@ -1,26 +1,36 @@
 public class BinarySemaphore {
-    private boolean state;
-    // true - released; false - acquired
+    private boolean unlocked;
+    // true - unlocked - 1; false - locked - 0
     public BinarySemaphore() {
         this(true);
     }
 
-    public BinarySemaphore(boolean state) {
-        this.state = state;
+    public BinarySemaphore(boolean unlocked) {
+        this.unlocked = unlocked;
+        System.out.println("Semaphore initialized …");
     }
 
-    public synchronized void release() {
-        if (state) {
-            this.notify(); // or wait?
+    public synchronized void unlock() {
+        if (unlocked) {
+            this.notify();
         }
-        counter++;
+        this.unlocked = true;
+        System.out.println("Semaphore unlocked …");
     }
 
-    public synchronized void acquire() throws InterruptedException {
-        while (counter == 0) {
-            this.wait();
+    public synchronized void lock() {
+        while (!unlocked) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
-        counter--;
+        this.unlocked = false;
+        System.out.println("Semaphore locked …");
     }
 
+    public boolean getState() {
+        return this.unlocked;
+    }
 }
