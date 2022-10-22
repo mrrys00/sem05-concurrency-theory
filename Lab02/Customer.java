@@ -1,4 +1,4 @@
-public class Customer extends Thread implements Runnable {
+public class Customer extends Thread {
     private String name;
     private CounterSemaphore selfShop;
 
