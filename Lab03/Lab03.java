@@ -6,8 +6,11 @@ import java.util.List;
 import Lab03.Zad1.BoundedBuffer;
 import Lab03.Zad1.ProducerV2;
 import Lab03.Zad1.ConsumerV2;
+
 import Lab03.Zad2.Client;
 import Lab03.Zad2.PrinterMonitor;
+import Lab03.Zad3.RestaurantClient;
+import Lab03.Zad3.WaiterMonitor;
 
 public class Lab03 {
     public static void main(String[] args) throws InterruptedException {
@@ -71,6 +74,29 @@ public class Lab03 {
     }
 
     private static void doubleTable() throws InterruptedException {
+        Integer pairsNumber = 10;
+        WaiterMonitor waiterMonitor = new WaiterMonitor(pairsNumber);
+        List<RestaurantClient> restaurantClients = new ArrayList<>();
 
+        for (Integer i = 0; i < pairsNumber; i++) {
+            RestaurantClient restaurantClientF = new RestaurantClient(waiterMonitor, "female", i);
+            RestaurantClient restaurantClientM = new RestaurantClient(waiterMonitor, "female", i);
+            restaurantClients.add(restaurantClientF);
+            restaurantClients.add(restaurantClientM);
+        }
+
+        // idea rozwiązania jest taka, że zainicjowana nullami tablica przechowuje na odpowiednich
+        // indeksach (indeks = ID klienta) informację czy ktoś z pary klientów ubiega się o rezerwację 
+        // stolika; jeśli tak i stolik jest wolny to dajemy im ilość czasu na zjedzenie; jeśli nie to 
+        // oczekuje na zgłoszenie się drugiego wątka z pary
+        // po zjedzeniu obydwa wątki zwalniają stolik, żeby nie doszło do sytuacji, w której
+        // jeden z nich blokuje cały czas stolik nie dopuszczając innych par do rezerwacji  
+
+        for (Thread t : restaurantClients) {
+            t.start();
+        }
+        for (Thread t : restaurantClients) {
+            t.join();
+        }
     }
 }
