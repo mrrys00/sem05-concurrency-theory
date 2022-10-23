@@ -6,6 +6,8 @@ import java.util.List;
 import Lab03.Zad1.BoundedBuffer;
 import Lab03.Zad1.ProducerV2;
 import Lab03.Zad1.ConsumerV2;
+import Lab03.Zad2.Client;
+import Lab03.Zad2.PrinterMonitor;
 
 public class Lab03 {
     public static void main(String[] args) throws InterruptedException {
@@ -50,7 +52,22 @@ public class Lab03 {
     }
 
     private static void printers() throws InterruptedException {
+        Integer N = 53;
+        Integer M = 18;
+        PrinterMonitor printerMonitor = new PrinterMonitor(M);
+        List<Client> clients = new ArrayList<>();
 
+        for (Integer i = 0; i < N; i++) {
+            Client client = new Client("Client" + String.valueOf(i), printerMonitor);
+            clients.add(client);
+        }
+
+        for (Thread t : clients) {
+            t.start();
+        }
+        for (Thread t : clients) {
+            t.join();
+        }
     }
 
     private static void doubleTable() throws InterruptedException {
