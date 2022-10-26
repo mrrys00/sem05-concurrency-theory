@@ -11,14 +11,14 @@ public class Customer extends Thread {
     public void run() {
 
         for (int i = 0; i < 5; i++) {
-            selfShop.release();
+            selfShop.acquire();
             System.out.println(this.name + " do the shopping");
             try {
                 Thread.sleep((long)(Math.random() * 1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            selfShop.acquire();
+            selfShop.release();
         }
 
     }
