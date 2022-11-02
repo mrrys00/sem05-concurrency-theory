@@ -9,8 +9,12 @@ import Lab03.Zad1.ConsumerV2;
 
 import Lab03.Zad2.Client;
 import Lab03.Zad2.PrinterMonitor;
-import Lab03.Zad3.RestaurantClient;
-import Lab03.Zad3.WaiterMonitor;
+
+// import Lab03.Zad3.RestaurantClient;
+// import Lab03.Zad3.WaiterMonitor;
+import Lab03.Zad3.Consumer;
+import Lab03.Zad3.Buffer;
+import Lab03.Zad3.Producer;
 
 public class Lab03 {
     public static void main(String[] args) throws InterruptedException {
@@ -74,29 +78,47 @@ public class Lab03 {
     }
 
     private static void doubleTable() throws InterruptedException {
-        Integer pairsNumber = 10;
-        WaiterMonitor waiterMonitor = new WaiterMonitor(pairsNumber);
-        List<RestaurantClient> restaurantClients = new ArrayList<>();
+        int max = 100;
+        Buffer buffer = new Buffer();
+        Producer producer = new Producer(buffer, max);
+        Consumer consumer = new Consumer(buffer, max);
 
-        for (Integer i = 0; i < pairsNumber; i++) {
-            RestaurantClient restaurantClientF = new RestaurantClient(waiterMonitor, "female", i);
-            RestaurantClient restaurantClientM = new RestaurantClient(waiterMonitor, "female", i);
-            restaurantClients.add(restaurantClientF);
-            restaurantClients.add(restaurantClientM);
-        }
+        Thread producerThread = new Thread(producer);
+        Thread consumerThread = new Thread(consumer);
 
-        // idea rozwiązania jest taka, że zainicjowana nullami tablica przechowuje na odpowiednich
-        // indeksach (indeks = ID klienta) informację czy ktoś z pary klientów ubiega się o rezerwację 
-        // stolika; jeśli tak i stolik jest wolny to dajemy im ilość czasu na zjedzenie; jeśli nie to 
-        // oczekuje na zgłoszenie się drugiego wątka z pary
-        // po zjedzeniu obydwa wątki zwalniają stolik, żeby nie doszło do sytuacji, w której
-        // jeden z nich blokuje cały czas stolik nie dopuszczając innych par do rezerwacji  
+        producerThread.start();
+        consumerThread.start();
+        try {
+            consumerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        // Integer pairsNumber = 10;
+        // WaiterMonitor waiterMonitor = new WaiterMonitor(pairsNumber);
+        // List<RestaurantClient> restaurantClients = new ArrayList<>();
 
-        for (Thread t : restaurantClients) {
-            t.start();
-        }
-        for (Thread t : restaurantClients) {
-            t.join();
-        }
+        // for (Integer i = 0; i < pairsNumber; i++) {
+        //     RestaurantClient restaurantClientF = new RestaurantClient(waiterMonitor, "female", i);
+        //     RestaurantClient restaurantClientM = new RestaurantClient(waiterMonitor, "male", i);
+        //     restaurantClients.add(restaurantClientF);
+        //     restaurantClients.add(restaurantClientM);
+        // }
+
+        // // jedna condition queue na parę 
+
+        // // idea rozwiązania jest taka, że zainicjowana nullami tablica przechowuje na odpowiednich
+        // // indeksach (indeks = ID klienta) informację czy ktoś z pary klientów ubiega się o rezerwację 
+        // // stolika; jeśli tak i stolik jest wolny to dajemy im ilość czasu na zjedzenie; jeśli nie to 
+        // // oczekuje na zgłoszenie się drugiego wątka z pary
+        // // po zjedzeniu obydwa wątki zwalniają stolik, żeby nie doszło do sytuacji, w której
+        // // jeden z nich blokuje cały czas stolik nie dopuszczając innych par do rezerwacji  
+
+        // for (Thread t : restaurantClients) {
+        //     t.start();
+        // }
+        // for (Thread t : restaurantClients) {
+        //     t.join();
+        // }
     }
 }

@@ -26,8 +26,6 @@ public class PrinterMonitor {
     public void release(int x) throws InterruptedException {
         lock.lock();
         try {
-            while (printers.size() == M)
-                notFull.await();
             printers.add(x);
             notEmpty.signal();
         } finally {
@@ -42,7 +40,6 @@ public class PrinterMonitor {
                 notEmpty.await();
             int x = printers.get(printers.size()-1);
             printers.remove(printers.size()-1);
-            notFull.signal();
             return x;
         } finally {
             lock.unlock();
