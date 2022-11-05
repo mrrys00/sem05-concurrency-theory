@@ -2,15 +2,13 @@ package Lab03.Zad3;
 
 public class Consumer implements Runnable {
     private Buffer buffer;
-    private int max;
 
-    public Consumer(Buffer buffer, int max) {
+    public Consumer(Buffer buffer) {
         this.buffer = buffer;
-        this.max = max;
     }
 
     public void run() {
-        for(int i = 0;  i < this.max;   i++) {
+        for(int i = 0;  i < 10;   i++) {
             try {
                 String message = buffer.take();
                 System.out.println(message);
