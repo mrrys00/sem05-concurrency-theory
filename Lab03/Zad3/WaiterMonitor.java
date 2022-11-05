@@ -13,8 +13,8 @@ public class WaiterMonitor {
     private int max;
 
     final private Lock lock = new ReentrantLock();
-    final private Condition notFull = lock.newCondition();
-    final private Condition notEmpty = lock.newCondition();
+    final private Condition client1State = lock.newCondition();
+    final private Condition client2State = lock.newCondition();
 
     public WaiterMonitor(int max) {
         this.max = max;
@@ -28,10 +28,19 @@ public class WaiterMonitor {
             System.out.println("Client " + restaurantClient.getID() + " try to reserve table");
             clientsReservations[restaurantClient.getID()].setWaiting(restaurantClient);
         } else if (clientsReservations[restaurantClient.getID()].getWaiting() != null) {
-            // while (client1 != null || client2 != null)
-            //     notEmpty.await();
+            lock.lock();
+            try {
+                while (client1 != null)
+                    client1State.await();
 
-            /// TUTAJ POTRZEBA MECHANIZMU CZEKAJĄCEGO JEŚLI DWÓCH POPRZEDNICH KLIENTÓW NIE ZWOLNIŁO STOLIKA
+                while (client2 != null)
+                    client2State.await();
+            } finally {
+                lock.unlock();
+            }
+
+            /// TUTAJ POTRZEBA MECHANIZMU CZEKAJĄCEGO JEŚLI DWÓCH POPRZEDNICH KLIENTÓW NIE
+            /// ZWOLNIŁO STOLIKA
 
             System.out.println("Clients pair " + restaurantClient.getID() + " reserved table");
             client1 = clientsReservations[restaurantClient.getID()].getWaiting();
@@ -44,11 +53,21 @@ public class WaiterMonitor {
     }
 
     public void release(RestaurantClient restaurantClient) throws InterruptedException {
-        System.out.println("Clients pair " + restaurantClient.getID() + " release table ; thread " + restaurantClient.getId());
-        
-        if (restaurantClient.getId() == clientThreadID1)
-            WaiterMonitor.client1 = null;
-        else if (restaurantClient.getId() == clientThreadID2)
-            WaiterMonitor.client2 = null;
+        System.out.println(
+                "Clients pair " + restaurantClient.getID() + " release table ; thread " + restaurantClient.getId());
+
+        lock.lock();
+        try {
+            if (restaurantClient.getId() == clientThreadID1) {
+                WaiterMonitor.client1 = null;
+                client1State.signal();
+            } else if (restaurantClient.getId() == clientThreadID2) {
+                WaiterMonitor.client2 = null;
+                client2State.signal();
+            }
+        } finally {
+            lock.unlock();
+        }
+
     }
 }
