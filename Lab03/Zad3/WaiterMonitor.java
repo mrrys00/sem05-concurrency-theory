@@ -25,7 +25,7 @@ public class WaiterMonitor {
 
     public void reserve(RestaurantClient restaurantClient) throws InterruptedException {
         if (clientsReservations[restaurantClient.getID()].getWaiting() == null) {
-            System.out.println("Client " + restaurantClient.getID() + " try to reserve table");
+            System.out.println("Client " + restaurantClient.getID() + " try to reserve table ; thread " + restaurantClient.getId());
             clientsReservations[restaurantClient.getID()].setWaiting(restaurantClient);
         } else if (clientsReservations[restaurantClient.getID()].getWaiting() != null) {
             lock.lock();
@@ -39,10 +39,7 @@ public class WaiterMonitor {
                 lock.unlock();
             }
 
-            /// TUTAJ POTRZEBA MECHANIZMU CZEKAJĄCEGO JEŚLI DWÓCH POPRZEDNICH KLIENTÓW NIE
-            /// ZWOLNIŁO STOLIKA
-
-            System.out.println("Clients pair " + restaurantClient.getID() + " reserved table");
+            System.out.println("Clients pair " + restaurantClient.getID() + " reserved table ; thread " + restaurantClient.getId());
             client1 = clientsReservations[restaurantClient.getID()].getWaiting();
             clientsReservations[restaurantClient.getID()].unsetWaiting();
             client2 = restaurantClient;

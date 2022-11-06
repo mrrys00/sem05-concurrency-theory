@@ -269,4 +269,84 @@ Client Client4 prints on printer 8
 
 ## Zad 3.
 
+Stolik dwuosobowy
+Napisz monitor Kelner sterujacy dostepem do stolika dwuosobowego. Ze stolika korzysta N par osob. Algorytm osoby z pary o numerze j:
 
+```
+forever{
+  wlasne sprawy;
+  Kelner.chce_stolik(j);
+  jedzenie;
+  Kelner.zwalniam();
+}
+```
+
+Stolik jest przydzielany parze w momencie gdy obydwie osoby tego zazadaja, zwalnianie nie musi byc jednoczesne.
+
+**Rozwiązanie:**
+Zainicjowana Monitorami dedykowanymi dla poszczególnych par (PairsMonitor) tablica przechowuje na odpowiednich indeksach (indeks = ID klienta) informację czy ktoś z pary klientów ubiega się o rezerwację stolika:
+
+* jeśli tak i stolik jest wolny to klienci wybierają sobie ilość czasu na zjedzenie
+* jeśli nie to oczekuje na zgłoszenie się drugiego klienta (wątka) z pary
+
+Po zjedzeniu obydwa wątki zwalniają stolik (nie koniecznie równocześnie), żeby nie doszło do sytuacji, w której jeden z nich blokuje cały czas stolik nie dopuszczając innych par do rezerwacji. Nad wszystkim panuje Monitor-kelner zezwalając następnym parom na dostęp do stolika dopiero w momencie gdy obydwóch klientów z poprzedniej opuściło ten stolik.
+
+Przykład dla 5-ciu par (10 klientów):
+```
+Client 4 try to reserve table ; thread 23     // klient 2. z pary 4. próbuje zarezerwować stolik
+Client 0 try to reserve table ; thread 15     // w międzyczasie inni także próbują zarezerwować stolik
+Client 1 try to reserve table ; thread 17
+Clients pair 4 reserved table ; thread 22     // dołącza 1. klient z pary 4.
+Client 4 eats
+Client 4 eats                                 // jedzą
+Client 2 try to reserve table ; thread 19     // w międzyczasie inni także próbują zarezerwować stolik
+Client 3 try to reserve table ; thread 21
+Clients pair 4 release table ; thread 22      // klient 1. z pary 4. zwalnia stolik
+Client 4 try to reserve table ; thread 22     // i od razu próbuje go zarezerwować ponownie
+Clients pair 4 release table ; thread 23      // klient 2. z pary 4. zwalnia stolik
+Clients pair 1 reserved table ; thread 16     // dopiero teraz zostaje dopuszczony następny klient z pary 1. chociaż prawdopodobnie jego prośba o rezerwację była wcześniej niż zwolnienie stolika przez 2. klienta z pary 4.
+Client 1 eats
+Client 1 eats
+Clients pair 1 release table ; thread 17
+Clients pair 1 release table ; thread 16
+Clients pair 2 reserved table ; thread 18
+Client 2 eats
+Client 2 eats
+Client 1 try to reserve table ; thread 17
+Clients pair 2 release table ; thread 18
+Client 2 try to reserve table ; thread 18
+Clients pair 2 release table ; thread 19
+Clients pair 0 reserved table ; thread 14
+Client 0 eats
+Client 0 eats
+Clients pair 0 release table ; thread 15
+Clients pair 0 release table ; thread 14
+Clients pair 3 reserved table ; thread 20
+Client 3 eats
+Client 3 eats
+Clients pair 3 release table ; thread 21
+Client 3 try to reserve table ; thread 21
+Client 0 try to reserve table ; thread 14
+Clients pair 3 release table ; thread 20
+Clients pair 4 reserved table ; thread 23
+Client 4 eats
+Client 4 eats
+Clients pair 4 release table ; thread 23
+Clients pair 2 reserved table ; thread 19
+Client 2 eats
+Client 2 eats
+Clients pair 2 release table ; thread 18
+Clients pair 2 release table ; thread 19
+Clients pair 1 reserved table ; thread 16
+Client 1 eats
+Client 1 eats
+Client 2 try to reserve table ; thread 18
+Clients pair 4 release table ; thread 22
+Client 4 try to reserve table ; thread 23
+Clients pair 1 release table ; thread 17
+Client 1 try to reserve table ; thread 17
+Clients pair 1 release table ; thread 16
+Clients pair 0 reserved table ; thread 15
+Client 0 eats
+Client 0 eats
+```
