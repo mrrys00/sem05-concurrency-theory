@@ -73,6 +73,30 @@
             "mainClass": "Lab03.Lab03",
             "projectName": "sem05-concurrency-theory_87f72959",
             "args": "tabl"
-        }
+        },
+        {
+            "type": "java",
+            "name": "Lab04",
+            "request": "launch",
+            "mainClass": "Lab04.Lab04",
+            "projectName": "sem05-concurrency-theory_87f72959",
+            "args": "stre"
+        },
+        // {
+        //     "type": "java",
+        //     "name": "Lab04",
+        //     "request": "launch",
+        //     "mainClass": "Lab04.Lab04",
+        //     "projectName": "sem05-concurrency-theory_87f72959",
+        //     "args": "naiv"
+        // },
+        // {
+        //     "type": "java",
+        //     "name": "Lab04",
+        //     "request": "launch",
+        //     "mainClass": "Lab04.Lab04",
+        //     "projectName": "sem05-concurrency-theory_87f72959",
+        //     "args": "fair"
+        // }
     ]
 }
