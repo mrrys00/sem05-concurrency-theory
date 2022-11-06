@@ -8,19 +8,19 @@ public class CounterSemaphore {
         this(10);
     }
     public CounterSemaphore(int max) {
-        this.counter = 0;
+        this.counter = max;
         if (max <= 0) throw new IllegalArgumentException(max + " < 0");
         this.max = max;
     }
     
     public synchronized void release() {        // cart taken
-        while (counter == max) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+        // while (counter == max) {
+        //     try {
+        //         this.wait();
+        //     } catch (InterruptedException e) {
+        //         Thread.currentThread().interrupt();
+        //     }
+        // }
         this.notifyAll();
         counter++;
     }
@@ -33,7 +33,7 @@ public class CounterSemaphore {
                 Thread.currentThread().interrupt();
             }
         }
-        this.notifyAll();
+        // this.notifyAll();
         counter--;
     }
 }

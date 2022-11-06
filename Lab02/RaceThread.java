@@ -1,4 +1,4 @@
-public class RaceThread extends Thread implements Runnable {
+public class RaceThread extends Thread {
     private boolean isIncrementor;
     private CounterV2 cnt;
     private int repeats;

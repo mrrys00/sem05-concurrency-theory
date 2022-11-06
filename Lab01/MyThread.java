@@ -1,4 +1,4 @@
-public class MyThread extends Thread implements Runnable {
+public class MyThread extends Thread {
     private boolean isIncrementor, isSynchronized;
     private Counter cnt;
     private int repeats;
