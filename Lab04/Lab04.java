@@ -8,9 +8,12 @@ import Lab04.Zad1.Consumer;
 import Lab04.Zad1.Processor;
 import Lab04.Zad1.Producer;
 
-import Lab04.Zad2.BufferV2;
-import Lab04.Zad2.ConsumerV2;
-import Lab04.Zad2.ProducerV2;
+import Lab04.Zad2.BufferFair;
+import Lab04.Zad2.BufferNaive;
+import Lab04.Zad2.ConsumerFair;
+import Lab04.Zad2.ConsumerNaive;
+import Lab04.Zad2.ProducerFair;
+import Lab04.Zad2.ProducerNaive;
 import Lab04.Zad2.Statistics;
 
 public class Lab04 {
@@ -21,6 +24,8 @@ public class Lab04 {
             naiveProcessing();
         else if (args[0].equals("fair"))
             fairProcessing();
+        else if (args[0].equals("comp"))
+            compare();
     }
 
     private static void streamProcessing() throws InterruptedException {
@@ -30,7 +35,7 @@ public class Lab04 {
         int consumerNumber = 1;
         int expState = 0;
 
-        Buffer buffer = new Buffer(max, producerNumber+processorNumber+consumerNumber);
+        Buffer buffer = new Buffer(max, producerNumber + processorNumber + consumerNumber);
         List<Producer> producers = new ArrayList<>();
         List<Consumer> consumers = new ArrayList<>();
         List<Processor> processors = new ArrayList<>();
@@ -41,7 +46,7 @@ public class Lab04 {
         }
 
         for (Integer i = 0; i < processorNumber; i++) {
-            Processor proc = new Processor(buffer, "Processor" + i.toString(), expState, expState+1);
+            Processor proc = new Processor(buffer, "Processor" + i.toString(), expState, expState + 1);
             processors.add(proc);
             expState += 1;
         }
@@ -73,8 +78,79 @@ public class Lab04 {
     }
 
     private static void naiveProcessing() throws InterruptedException {
+        int producerNumber = 10, consumerNumber = 10, M = 10;
+        BufferNaive bufferNaive = new BufferNaive(2 * M);
+
+        List<ProducerNaive> producers = new ArrayList<>();
+        List<ConsumerNaive> consumers = new ArrayList<>();
+
+        for (Integer i = 0; i < producerNumber; i++) {
+            ProducerNaive prod = new ProducerNaive(bufferNaive, "Producer" + i.toString());
+            producers.add(prod);
+        }
+
+        for (Integer i = 0; i < consumerNumber; i++) {
+            ConsumerNaive cons = new ConsumerNaive(bufferNaive, "Customer" + i.toString());
+            consumers.add(cons);
+        }
+
+        for (Thread t : producers) {
+            t.start();
+        }
+        for (Thread t : consumers) {
+            t.start();
+        }
+
+        for (Thread t : producers) {
+            t.join();
+        }
+        for (Thread t : consumers) {
+            t.join();
+        }
     }
 
     private static void fairProcessing() throws InterruptedException {
+        int producerNumber = 10, consumerNumber = 10, M = 10;
+        BufferFair bufferFair = new BufferFair(2 * M);
+
+        List<ProducerFair> producers = new ArrayList<>();
+        List<ConsumerFair> consumers = new ArrayList<>();
+
+        for (Integer i = 0; i < producerNumber; i++) {
+            ProducerFair prod = new ProducerFair(bufferFair, "Producer" + i.toString());
+            producers.add(prod);
+        }
+
+        for (Integer i = 0; i < consumerNumber; i++) {
+            ConsumerFair cons = new ConsumerFair(bufferFair, "Customer" + i.toString());
+            consumers.add(cons);
+        }
+
+        for (Thread t : producers) {
+            t.start();
+        }
+        for (Thread t : consumers) {
+            t.start();
+        }
+
+        for (Thread t : producers) {
+            t.join();
+        }
+        for (Thread t : consumers) {
+            t.join();
+        }
+    }
+
+    private static void compare() {
+        Statistics statistics = new Statistics();
+        
+        int maxM = 1000000;
+        int maxPC = 1000;
+
+        for (int M = 10; M <= maxM; M *= 10) {
+            for (int PC = 10; PC < maxPC; PC *= 10) {
+
+            }
+        }
     }
 }
