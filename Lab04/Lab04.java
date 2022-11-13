@@ -24,29 +24,30 @@ public class Lab04 {
     }
 
     private static void streamProcessing() throws InterruptedException {
-        int max = 100;
-        Buffer buffer = new Buffer(max);
-        
+        int max = 10;
         int producerNumber = 1;
+        int processorNumber = 10;
         int consumerNumber = 1;
-        int processorNumber = 5;
-        
+        int expState = 0;
+
+        Buffer buffer = new Buffer(max, producerNumber+processorNumber+consumerNumber);
         List<Producer> producers = new ArrayList<>();
         List<Consumer> consumers = new ArrayList<>();
         List<Processor> processors = new ArrayList<>();
 
         for (Integer i = 0; i < producerNumber; i++) {
-            Producer prod = new Producer(buffer, "Producer" + i.toString());
+            Producer prod = new Producer(buffer, "Producer" + i.toString(), -1, 0);
             producers.add(prod);
         }
 
         for (Integer i = 0; i < processorNumber; i++) {
-            Processor proc = new Processor(buffer, "Processor" + i.toString());
+            Processor proc = new Processor(buffer, "Processor" + i.toString(), expState, expState+1);
             processors.add(proc);
+            expState += 1;
         }
 
         for (Integer i = 0; i < consumerNumber; i++) {
-            Consumer cons = new Consumer(buffer, "Customer" + i.toString());
+            Consumer cons = new Consumer(buffer, "Customer" + i.toString(), expState, -1);
             consumers.add(cons);
         }
 
