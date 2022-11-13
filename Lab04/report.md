@@ -61,3 +61,26 @@ Każdy z procesów działa tak samo - zmienia liczbę (wiadomość) w buforze na
 Analogiczna sytuacja jest z klasami `Producer`, `Processor` oraz `Customer` jednak tam problemem technologicznym w Java okazało się dziedziczenie więc zrezygnowałem z implementowania tego przez klasę-rodzica.
 
 ## Zad 2
+
+**Producenci i konsumenci z losową iloscią pobieranych i wstawianych porcji**
+* Bufor moze pomiescic 2M nierozróżnialnych elementow (kolejnosc nie istotna)
+* Jest wielu producentów i konsumentów
+* Producent wstawia do bufora losową liczbę elementów (nie wiecej niz M)
+* Konsument pobiera losową liczbę elementów (nie wiecej niz M)
+
+Wyjasnić po co zalozenie o M.
+
+Zaimplementować rozwiązanie z losową liczbą porcji w dwóch wariantach:
+
+1. Wariant naiwny: producent / konsument jest wstrzymywany aż w buforze nie będzie wystarczająco dużo miejsca / elementów.
+2. Wariant sprawiedliwy: zapobiega zagłodzeniu procesów produkujących lub konsumujących duże porcje. Wymyślić własne (NIE używać prorytetów!), bądź użyć rozwiązania według książki \
+    > Problemy pochodzą z książki Z. Weiss, T. Gruzlewski, Programowanie wspolbiezne i rozproszone.
+
+Proszę uruchomić obydwa warianty algorytmu dla wielu producentów i konsumentów, a następnie zmierzyć i przedstawić na wykresie porównawczym (osobno dla producentów i konsumentów) średni czas oczekiwania na dostęp do bufora w zależności od wielkości porcji (czas metod put() i get()).
+
+Uwagi:
+
+* Producenci i konsumenci losują wielkość porcji przed każdą operacją.
+* Każda wielkość porcji jest losowana z równym prawdopodobieństwem;
+* Do pomiaru czasu proszę używać System.nanoTime()
+* Przykladowy zestaw testow: M rowne 1000, 10k, 100k Konfiguracji P-K: 10P+10K, 100P+100K, 1000P+1000K

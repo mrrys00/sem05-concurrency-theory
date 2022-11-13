@@ -78,19 +78,26 @@ public class Lab04 {
     }
 
     private static void naiveProcessing() throws InterruptedException {
-        int producerNumber = 10, consumerNumber = 10, M = 10;
-        BufferNaive bufferNaive = new BufferNaive(2 * M);
+        naiveProcessing(10, 10, 10, -1);     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
+    }
+
+    private static void fairProcessing() throws InterruptedException {
+        fairProcessing(10, 10, 10, -1);     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
+    }
+
+    private static void naiveProcessing(int producerNumber, int consumerNumber, int M, int portionTimes) throws InterruptedException {
+        BufferNaive bufferNaive = new BufferNaive(2 * M, portionTimes);
 
         List<ProducerNaive> producers = new ArrayList<>();
         List<ConsumerNaive> consumers = new ArrayList<>();
 
         for (Integer i = 0; i < producerNumber; i++) {
-            ProducerNaive prod = new ProducerNaive(bufferNaive, "Producer" + i.toString());
+            ProducerNaive prod = new ProducerNaive(bufferNaive, "Producer" + i.toString(), portionTimes, producerNumber);
             producers.add(prod);
         }
 
         for (Integer i = 0; i < consumerNumber; i++) {
-            ConsumerNaive cons = new ConsumerNaive(bufferNaive, "Customer" + i.toString());
+            ConsumerNaive cons = new ConsumerNaive(bufferNaive, "Customer" + i.toString(), portionTimes, consumerNumber);
             consumers.add(cons);
         }
 
@@ -109,20 +116,19 @@ public class Lab04 {
         }
     }
 
-    private static void fairProcessing() throws InterruptedException {
-        int producerNumber = 10, consumerNumber = 10, M = 10;
-        BufferFair bufferFair = new BufferFair(2 * M);
+    private static void fairProcessing(int producerNumber, int consumerNumber, int M, int portionTimes) throws InterruptedException {
+        BufferFair bufferFair = new BufferFair(2 * M, portionTimes);
 
         List<ProducerFair> producers = new ArrayList<>();
         List<ConsumerFair> consumers = new ArrayList<>();
 
         for (Integer i = 0; i < producerNumber; i++) {
-            ProducerFair prod = new ProducerFair(bufferFair, "Producer" + i.toString());
+            ProducerFair prod = new ProducerFair(bufferFair, "Producer" + i.toString(), portionTimes, producerNumber);
             producers.add(prod);
         }
 
         for (Integer i = 0; i < consumerNumber; i++) {
-            ConsumerFair cons = new ConsumerFair(bufferFair, "Customer" + i.toString());
+            ConsumerFair cons = new ConsumerFair(bufferFair, "Customer" + i.toString(), portionTimes, consumerNumber);
             consumers.add(cons);
         }
 

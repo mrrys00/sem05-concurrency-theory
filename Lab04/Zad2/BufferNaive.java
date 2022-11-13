@@ -1,5 +1,9 @@
 package Lab04.Zad2;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -8,30 +12,53 @@ public class BufferNaive {
     private final Lock lock = new ReentrantLock();
     private final Condition canUseBuffer = lock.newCondition();
 
+    List<Integer> producersPortions = new ArrayList<>();
+    List<Integer> consumersPortions = new ArrayList<>();
+
     private int bufferSize;
     private boolean[] elements;
     private int currentNumberOfElements;
 
-    public BufferNaive(int bufferSize) {
+    private int portionTimes;
+
+    public BufferNaive(int bufferSize, int portionTimes) {
         this.bufferSize = bufferSize;
         elements = new boolean[bufferSize];
         for (int i = 0; i < bufferSize; i++)
             elements[i] = false;
+
+        this.portionTimes = portionTimes;
+        if (this.portionTimes > 0) {
+            for (int i = 0; i < bufferSize / 2; i++) {
+                for (int a = 0; a < portionTimes; a++) {
+                    producersPortions.add(i);
+                    consumersPortions.add(i);
+                }
+            }
+            Collections.shuffle(producersPortions);
+            Collections.shuffle(consumersPortions);
+        }
         this.currentNumberOfElements = 0;
     }
 
-    public int getBufferSize() { return this.bufferSize; }
+    public int getBufferSize() {
+        return this.bufferSize;
+    }
 
     public void bufferPrinter() {
-        for ( boolean element : elements ) {
-            if (element) System.out.print("1 ");
-            else System.out.print("0 ");
+        for (boolean element : elements) {
+            if (element)
+                System.out.print("1 ");
+            else
+                System.out.print("0 ");
         }
         System.out.println();
     }
 
     public void put(String name, int portion) throws InterruptedException {
         lock.lock();
+        if (this.portionTimes > 0)
+            portion = producersPortions.remove(0);
         try {
             System.out.println("Producer " + name + " try to put : " + portion);
             while (bufferSize - currentNumberOfElements < portion)
@@ -52,6 +79,8 @@ public class BufferNaive {
 
     public void get(String name, int portion) throws InterruptedException {
         lock.lock();
+        if (this.portionTimes > 0)
+            portion = consumersPortions.remove(0);
         try {
             System.out.println("Consumer " + name + " try to get : " + portion);
             while (currentNumberOfElements < portion)
