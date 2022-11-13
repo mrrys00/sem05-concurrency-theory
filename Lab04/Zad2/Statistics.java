@@ -12,9 +12,13 @@ public class Statistics {
     private Map<Integer, Double> fairProducer = new HashMap<Integer, Double>();
     private Map<Integer, Double> fairCustomer = new HashMap<Integer, Double>();
 
-    public long getNanoStartTimestamp() { return System.nanoTime(); }
+    public long getNanoStartTimestamp() {
+        return System.nanoTime();
+    }
 
-    public long getNanoDuration(long startTimestamp) { return System.nanoTime() - startTimestamp;}
+    public long getNanoDuration(long startTimestamp) {
+        return System.nanoTime() - startTimestamp;
+    }
 
     private void putMap(HashMap<Integer, Double> map, Double value, Integer key) {
 

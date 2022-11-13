@@ -78,14 +78,15 @@ public class Lab04 {
     }
 
     private static void naiveProcessing() throws InterruptedException {
-        naiveProcessing(10, 10, 10, -1);     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
+        naiveProcessing(10, 10, 10, -1, new Statistics());     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
     }
 
     private static void fairProcessing() throws InterruptedException {
-        fairProcessing(10, 10, 10, -1);     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
+        fairProcessing(10, 10, 10, -1, new Statistics());     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
     }
 
-    private static void naiveProcessing(int producerNumber, int consumerNumber, int M, int portionTimes) throws InterruptedException {
+    private static void naiveProcessing(int producerNumber, int consumerNumber, int M, int portionTimes, Statistics stat) throws InterruptedException {
+        // użyć statystyk
         BufferNaive bufferNaive = new BufferNaive(2 * M, portionTimes);
 
         List<ProducerNaive> producers = new ArrayList<>();
@@ -116,7 +117,8 @@ public class Lab04 {
         }
     }
 
-    private static void fairProcessing(int producerNumber, int consumerNumber, int M, int portionTimes) throws InterruptedException {
+    private static void fairProcessing(int producerNumber, int consumerNumber, int M, int portionTimes, Statistics stat) throws InterruptedException {
+        // użyć statystyk
         BufferFair bufferFair = new BufferFair(2 * M, portionTimes);
 
         List<ProducerFair> producers = new ArrayList<>();
@@ -147,16 +149,22 @@ public class Lab04 {
         }
     }
 
-    private static void compare() {
-        Statistics statistics = new Statistics();
+    private static void compare() throws InterruptedException {
+        Statistics statisticsNaive = new Statistics();
+        Statistics statisticsFair = new Statistics();
         
         int maxM = 1000000;
         int maxPC = 1000;
 
         for (int M = 10; M <= maxM; M *= 10) {
             for (int PC = 10; PC < maxPC; PC *= 10) {
+                naiveProcessing(PC, PC, M, 5, statisticsNaive);
 
+                // problem gdzie trzymać dane tymczasowe
+                // zapisz do statystyki
             }
         }
+
+        // tutaj potrzeba dla wariantu fair kodu
     }
 }
