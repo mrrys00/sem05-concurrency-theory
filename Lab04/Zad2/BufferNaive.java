@@ -23,6 +23,8 @@ public class BufferNaive {
 
     private Statistics statistics;
 
+    private boolean logs = false;
+
     public BufferNaive(int bufferSize, int portionTimes, Statistics statistics) {
         this.bufferSize = bufferSize;
         elements = new boolean[bufferSize];
@@ -49,32 +51,22 @@ public class BufferNaive {
         return this.bufferSize;
     }
 
-    public void bufferPrinter() {
-        for (boolean element : elements) {
-            if (element)
-                System.out.print("1 ");
-            else
-                System.out.print("0 ");
-        }
-        System.out.println();
-    }
-
     public void put(String name, int portion) throws InterruptedException {
         long ts = statistics.getNanoStartTimestamp();
         lock.lock();
         if (this.portionTimes > 0)
             portion = producersPortions.remove(0);
         try {
-            System.out.println("Producer " + name + " try to put : " + portion);
+            if (this.logs) System.out.println("Producer " + name + " try to put : " + portion);
             while (bufferSize - currentNumberOfElements < portion)
                 canUseBuffer.await();
 
-            System.out.println("Producer " + name + " put : " + portion);
+            if (this.logs) System.out.println("Producer " + name + " put : " + portion);
             for (int i = currentNumberOfElements; i < currentNumberOfElements + portion; i++)
                 elements[i] = true;
 
             currentNumberOfElements += portion;
-            System.out.println(currentNumberOfElements);
+            if (this.logs) System.out.println(currentNumberOfElements);
             canUseBuffer.signalAll();
 
         } finally {
@@ -89,16 +81,16 @@ public class BufferNaive {
         if (this.portionTimes > 0)
             portion = consumersPortions.remove(0);
         try {
-            System.out.println("Consumer " + name + " try to get : " + portion);
+            if (this.logs) System.out.println("Consumer " + name + " try to get : " + portion);
             while (currentNumberOfElements < portion)
                 canUseBuffer.await();
 
-            System.out.println("Consumer " + name + " get : " + portion);
+            if (this.logs) System.out.println("Consumer " + name + " get : " + portion);
             for (int i = currentNumberOfElements - 1; i >= currentNumberOfElements - portion; i--)
                 elements[i] = false;
 
             currentNumberOfElements -= portion;
-            System.out.println(currentNumberOfElements);
+            if (this.logs) System.out.println(currentNumberOfElements);
             canUseBuffer.signalAll();
 
         } finally {

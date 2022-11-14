@@ -6,4 +6,4 @@ set xlabel "portions"
 set ylabel "time [s]"
 set grid
 set output 'results.png'
-plot "results.dat" using 1:2 title "naive producer" lt rgb "orange" with line , "results.dat" using 1:3 title "naive consumer" lt rgb "red" with line , "results.dat" using 1:4 title "fair producer" lt rgb "blue" with line , "results.dat" using 1:5 title "fair consumer" lt rgb "green" with line 
+plot "results.dat" using 1:2 every 100 title "naive producer" lt rgb "orange" with line , "results.dat" using 1:3 every 100 title "naive consumer" lt rgb "red" with line , "results.dat" using 1:4 every 100 title "fair producer" lt rgb "blue" with line , "results.dat" using 1:5 every 100 title "fair consumer" lt rgb "green" with line 

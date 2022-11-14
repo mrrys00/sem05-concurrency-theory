@@ -28,6 +28,8 @@ public class BufferFair {
 
     private Statistics statistics;
 
+    private boolean logs = false;
+
     public BufferFair(int bufferSize, int portionTimes, Statistics statistics) {
         isWaitingConsumer = false;
         isWaitingProducer = false;
@@ -63,7 +65,7 @@ public class BufferFair {
         if (this.portionTimes > 0)
             portion = producersPortions.remove(0);
         try {
-            System.out.println("Producer " + name + " try to put " + portion);
+            if (this.logs) System.out.println("Producer " + name + " try to put " + portion);
 
             if (isWaitingProducer)
                 producerRest.await();
@@ -72,12 +74,12 @@ public class BufferFair {
             while (bufferSize - currentNumberOfElements < portion)
                 firstProducer.await();
 
-            System.out.println("Producer " + name + " put " + portion);
+            if (this.logs) System.out.println("Producer " + name + " put " + portion);
             for (int i = currentNumberOfElements; i < currentNumberOfElements + portion; i++)
                 elements[i] = true;
 
             currentNumberOfElements += portion;
-            System.out.println(currentNumberOfElements);
+            if (this.logs) System.out.println(currentNumberOfElements);
 
             isWaitingProducer = false;
             producerRest.signal();
@@ -95,7 +97,7 @@ public class BufferFair {
         if (this.portionTimes > 0)
             portion = consumersPortions.remove(0);
         try {
-            System.out.println("Consumer " + name + " try to get " + portion);
+            if (this.logs) System.out.println("Consumer " + name + " try to get " + portion);
 
             if (isWaitingConsumer)
                 consumerRest.await();
@@ -104,12 +106,12 @@ public class BufferFair {
             while (currentNumberOfElements < portion)
                 firstConsumer.await();
 
-            System.out.println("Consumer " + name + " get " + portion);
+            if (this.logs) System.out.println("Consumer " + name + " get " + portion);
             for (int i = currentNumberOfElements - 1; i >= currentNumberOfElements - portion; i--)
                 elements[i] = false;
 
             currentNumberOfElements -= portion;
-            System.out.println(currentNumberOfElements);
+            if (this.logs) System.out.println(currentNumberOfElements);
 
             isWaitingConsumer = false;
             firstProducer.signal();

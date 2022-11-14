@@ -88,7 +88,6 @@ public class Lab04 {
     }
 
     private static void naiveProcessing(int producerNumber, int consumerNumber, int M, int portionTimes, Statistics stat) throws InterruptedException {
-        // użyć statystyk
         BufferNaive bufferNaive = new BufferNaive(2 * M, portionTimes, stat);
 
         List<ProducerNaive> producers = new ArrayList<>();
@@ -120,7 +119,6 @@ public class Lab04 {
     }
 
     private static void fairProcessing(int producerNumber, int consumerNumber, int M, int portionTimes, Statistics stat) throws InterruptedException {
-        // użyć statystyk
         BufferFair bufferFair = new BufferFair(2 * M, portionTimes, stat);
 
         List<ProducerFair> producers = new ArrayList<>();
@@ -152,8 +150,8 @@ public class Lab04 {
     }
 
     private static void compare() throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
-        int maxM = 10;
-        int maxPC = 10;
+        int maxM = 10000;
+        int maxPC = 100;
         int portionTimes = 5;
 
         Statistics statistics = new Statistics(portionTimes, maxM);
@@ -165,15 +163,5 @@ public class Lab04 {
         statistics.avgFairProducer();
         statistics.avgFairCustomer();
         statistics.saveResults();
-
-        // for (int M = 10; M <= maxM; M *= 10) {
-        //     for (int PC = 10; PC < maxPC; PC *= 10) {
-
-        //         // problem gdzie trzymać dane tymczasowe
-        //         // zapisz do statystyki
-        //     }
-        // }
-
-        // tutaj potrzeba dla wariantu fair kodu
     }
 }

@@ -84,3 +84,5 @@ Uwagi:
 * Każda wielkość porcji jest losowana z równym prawdopodobieństwem;
 * Do pomiaru czasu proszę używać System.nanoTime()
 * Przykladowy zestaw testow: M rowne 1000, 10k, 100k Konfiguracji P-K: 10P+10K, 100P+100K, 1000P+1000K
+
+**Rozwiązanie**
