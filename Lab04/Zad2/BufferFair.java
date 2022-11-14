@@ -26,7 +26,9 @@ public class BufferFair {
 
     private int portionTimes;
 
-    public BufferFair(int bufferSize, int portionTimes) {
+    private Statistics statistics;
+
+    public BufferFair(int bufferSize, int portionTimes, Statistics statistics) {
         isWaitingConsumer = false;
         isWaitingProducer = false;
 
@@ -47,6 +49,8 @@ public class BufferFair {
             Collections.shuffle(consumersPortions);
         }
         this.currentNumberOfElements = 0;
+
+        this.statistics = statistics;
     }
 
     public int getBufferSize() {
@@ -54,6 +58,7 @@ public class BufferFair {
     }
 
     public void put(String name, int portion) throws InterruptedException {
+        long ts = statistics.getNanoStartTimestamp();
         lock.lock();
         if (this.portionTimes > 0)
             portion = producersPortions.remove(0);
@@ -80,10 +85,12 @@ public class BufferFair {
 
         } finally {
             lock.unlock();
+            statistics.putFairProducer(portion, statistics.getNanoDuration(ts));
         }
     }
 
     public void get(String name, int portion) throws InterruptedException {
+        long ts = statistics.getNanoStartTimestamp();
         lock.lock();
         if (this.portionTimes > 0)
             portion = consumersPortions.remove(0);
@@ -110,6 +117,7 @@ public class BufferFair {
 
         } finally {
             lock.unlock();
+            statistics.putFairCustomer(portion, statistics.getNanoDuration(ts));
         }
     }
 }

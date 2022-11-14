@@ -1,5 +1,7 @@
 package Lab04;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import Lab04.Zad2.ProducerNaive;
 import Lab04.Zad2.Statistics;
 
 public class Lab04 {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
         if (args[0].equals("stre"))
             streamProcessing();
         else if (args[0].equals("naiv"))
@@ -78,16 +80,16 @@ public class Lab04 {
     }
 
     private static void naiveProcessing() throws InterruptedException {
-        naiveProcessing(10, 10, 10, -1, new Statistics());     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
+        naiveProcessing(10, 10, 10, -1, new Statistics(-1, 10));     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
     }
 
     private static void fairProcessing() throws InterruptedException {
-        fairProcessing(10, 10, 10, -1, new Statistics());     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
+        fairProcessing(10, 10, 10, -1, new Statistics(-1, 10));     // jeśli portion times > 0 to dla statystyk robimy, jeśli nie to w nieskończoność
     }
 
     private static void naiveProcessing(int producerNumber, int consumerNumber, int M, int portionTimes, Statistics stat) throws InterruptedException {
         // użyć statystyk
-        BufferNaive bufferNaive = new BufferNaive(2 * M, portionTimes);
+        BufferNaive bufferNaive = new BufferNaive(2 * M, portionTimes, stat);
 
         List<ProducerNaive> producers = new ArrayList<>();
         List<ConsumerNaive> consumers = new ArrayList<>();
@@ -119,7 +121,7 @@ public class Lab04 {
 
     private static void fairProcessing(int producerNumber, int consumerNumber, int M, int portionTimes, Statistics stat) throws InterruptedException {
         // użyć statystyk
-        BufferFair bufferFair = new BufferFair(2 * M, portionTimes);
+        BufferFair bufferFair = new BufferFair(2 * M, portionTimes, stat);
 
         List<ProducerFair> producers = new ArrayList<>();
         List<ConsumerFair> consumers = new ArrayList<>();
@@ -149,21 +151,28 @@ public class Lab04 {
         }
     }
 
-    private static void compare() throws InterruptedException {
-        Statistics statisticsNaive = new Statistics();
-        Statistics statisticsFair = new Statistics();
-        
-        int maxM = 1000000;
-        int maxPC = 1000;
+    private static void compare() throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
+        int maxM = 10;
+        int maxPC = 10;
+        int portionTimes = 5;
 
-        for (int M = 10; M <= maxM; M *= 10) {
-            for (int PC = 10; PC < maxPC; PC *= 10) {
-                naiveProcessing(PC, PC, M, 5, statisticsNaive);
+        Statistics statistics = new Statistics(portionTimes, maxM);
+        naiveProcessing(maxPC, maxPC, maxM, portionTimes, statistics);
+        fairProcessing(maxPC, maxPC, maxM, portionTimes, statistics);
 
-                // problem gdzie trzymać dane tymczasowe
-                // zapisz do statystyki
-            }
-        }
+        statistics.avgNaiveProducer();
+        statistics.avgNaiveCustomer();
+        statistics.avgFairProducer();
+        statistics.avgFairCustomer();
+        statistics.saveResults();
+
+        // for (int M = 10; M <= maxM; M *= 10) {
+        //     for (int PC = 10; PC < maxPC; PC *= 10) {
+
+        //         // problem gdzie trzymać dane tymczasowe
+        //         // zapisz do statystyki
+        //     }
+        // }
 
         // tutaj potrzeba dla wariantu fair kodu
     }

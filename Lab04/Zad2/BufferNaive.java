@@ -21,7 +21,9 @@ public class BufferNaive {
 
     private int portionTimes;
 
-    public BufferNaive(int bufferSize, int portionTimes) {
+    private Statistics statistics;
+
+    public BufferNaive(int bufferSize, int portionTimes, Statistics statistics) {
         this.bufferSize = bufferSize;
         elements = new boolean[bufferSize];
         for (int i = 0; i < bufferSize; i++)
@@ -39,6 +41,8 @@ public class BufferNaive {
             Collections.shuffle(consumersPortions);
         }
         this.currentNumberOfElements = 0;
+
+        this.statistics = statistics;
     }
 
     public int getBufferSize() {
@@ -56,6 +60,7 @@ public class BufferNaive {
     }
 
     public void put(String name, int portion) throws InterruptedException {
+        long ts = statistics.getNanoStartTimestamp();
         lock.lock();
         if (this.portionTimes > 0)
             portion = producersPortions.remove(0);
@@ -74,10 +79,12 @@ public class BufferNaive {
 
         } finally {
             lock.unlock();
+            statistics.putNaiveProducer(portion, statistics.getNanoDuration(ts));
         }
     }
 
     public void get(String name, int portion) throws InterruptedException {
+        long ts = statistics.getNanoStartTimestamp();
         lock.lock();
         if (this.portionTimes > 0)
             portion = consumersPortions.remove(0);
@@ -96,6 +103,7 @@ public class BufferNaive {
 
         } finally {
             lock.unlock();
+            statistics.putNaiveCustomer(portion, statistics.getNanoDuration(ts));
         }
     }
 }
