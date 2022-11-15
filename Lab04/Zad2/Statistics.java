@@ -5,16 +5,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalDouble;
 
 public class Statistics {
-    // private Map<Integer, Double> naiveProducer = new HashMap<Integer, Double>();
-    // private Map<Integer, Double> naiveCustomer = new HashMap<Integer, Double>();
-    // private Map<Integer, Double> fairProducer = new HashMap<Integer, Double>();
-    // private Map<Integer, Double> fairCustomer = new HashMap<Integer, Double>();
 
     private int M;
     private int portionTimes;
@@ -96,24 +88,4 @@ public class Statistics {
         }
         writer.close();
     }
-
-    // private void putMap(HashMap<Integer, Double> map, Double value, Integer key)
-    // {
-
-    // }
-
-    // private double avg(ArrayList<Integer> l) {
-    // //
-    // https://stackoverflow.com/questions/10791568/calculating-average-of-an-array-list
-    // final OptionalDouble average = l
-    // .stream()
-    // .mapToDouble(a -> a)
-    // .average();
-
-    // return average.isPresent() ? average.getAsDouble() : 0;
-    // }
-
-    // public void putNaiveProducer(Integer key, ArrayList<Integer> l) {
-
-    // }
 }
