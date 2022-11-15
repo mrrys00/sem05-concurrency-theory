@@ -150,9 +150,9 @@ public class Lab04 {
     }
 
     private static void compare() throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
-        int maxM = 10000;
-        int maxPC = 100;
-        int portionTimes = 5;
+        int maxM = 100000;
+        int maxPC = 1000;
+        int portionTimes = 30;
 
         Statistics statistics = new Statistics(portionTimes, maxM);
         naiveProcessing(maxPC, maxPC, maxM, portionTimes, statistics);
