@@ -13,7 +13,8 @@
 
 Zaimplementować rozwiązanie przetwarzania potokowego (Przykładowe załozenia: bufor rozmiaru 100, 1 producent, 1 konsument, 5 uszeregowanych procesów przetwarzających.) Od czego zależy prędkość obróbki w tym systemie ? Rozwiązanie za pomocą semaforów lub monitorów (dowolnie)
 
-**Rozwiązanie** \
+### Rozwiązanie
+
 W rozwiązaniu skorzystam z mechanizmu monitorów. \
 Dla wygody rozwiązania ustalmy, że brak wiadomości to `-1` a wiadomości są odpowiednio liczbami naturalnymi `0..n-1` gdzie `n - ilość uczestników łańcucha przetwarzania`
 
@@ -62,7 +63,8 @@ Analogiczna sytuacja jest z klasami `Producer`, `Processor` oraz `Customer` jedn
 
 ## Zad 2
 
-**Producenci i konsumenci z losową iloscią pobieranych i wstawianych porcji**
+**Producenci i konsumenci z losową iloscią pobieranych i wstawianych porcji** \
+
 * Bufor moze pomiescic 2M nierozróżnialnych elementow (kolejnosc nie istotna)
 * Jest wielu producentów i konsumentów
 * Producent wstawia do bufora losową liczbę elementów (nie wiecej niz M)
@@ -85,4 +87,162 @@ Uwagi:
 * Do pomiaru czasu proszę używać System.nanoTime()
 * Przykladowy zestaw testow: M rowne 1000, 10k, 100k Konfiguracji P-K: 10P+10K, 100P+100K, 1000P+1000K
 
-**Rozwiązanie**
+### Rozwiązanie
+
+#### Problem zakończenia programu
+
+Bardzo częstą sytuacją byłoby, że program po prostu mógłby się nie zakończyć ponieważ konsument czekałby aż producent (który już nie działa) wrzuci do buforu następne porcje. Rozwiązanie, którego użyłem to stworzenie w buforze dwóch list dla producenta i konsumenta o rozmiarach `processTimes * M` i zakresie wartości `0..M`, gdzie `processTimes` to ilość powtórzeń danej wartości w liście a następnie "potasowanie" kolejności tych liczb:
+
+```java
+    List<Integer> producersPortions = new ArrayList<>();
+    List<Integer> consumersPortions = new ArrayList<>();
+
+    public Buffer(…) {
+        if (this.portionTimes > 0) {
+            for (int i = 0; i < bufferSize / 2; i++) {
+                for (int a = 0; a < portionTimes; a++) {
+                    producersPortions.add(i);
+                    consumersPortions.add(i);
+                }
+            }
+            Collections.shuffle(producersPortions);
+            Collections.shuffle(consumersPortions);
+        }
+    }   
+```
+
+Losowanie to po prostu pobranie i usunięcie z listy 0. elementu do momentu aż listy będą całkowicie puste:
+
+```java
+portion = producersPortions.remove(0);
+```
+
+Dlaczego to działa i jest losowe?
+A no dlatego, że suma wszystkich liczb w obydwóch listach jest równa oraz liczby występują w losowej kolejności
+
+#### Problem mierzenia czasu
+
+Aby zapewnić pomiar czasów, przetwarzanie zmierzonych czasów, zapis wyników do pliku itd stworzyłem do tego osobną klasę `Statistics`. Zawiera ona 4 listy przechowujące podczas działania programu na kolejnych indeksach sumy poszczególnych czasów działania dla kolejnych porcji `0..M`:
+
+```java
+private double[] naiveProducerArray;
+private double[] naiveCustomerArray;
+private double[] fairProducerArray;
+private double[] fairCustomerArray;
+```
+
+Czas mierzę za pomocą oddelegowanych metod z klasy `Statistics`:
+
+```java
+    public long getNanoStartTimestamp() {
+        return System.nanoTime();
+    }
+
+    public long getNanoDuration(long startTimestamp) {
+        return System.nanoTime() - startTimestamp;
+    }
+```
+
+otaczając blok działania wątka swoimi metodami:
+
+```java
+        long ts = statistics.getNanoStartTimestamp();       // start
+        lock.lock();
+        if (this.portionTimes > 0)
+            portion = consumersPortions.remove(0);
+        try {
+            // …
+
+        } finally {
+            lock.unlock();
+            statistics.putNaiveCustomer(portion, statistics.getNanoDuration(ts));   // zapisz zmierzony czas do tablicy 
+        }
+```
+
+Przchowywanie sumy na kolejnych indeksach tablicy:
+
+```java
+    public void putNaiveCustomer(int idx, long value) {
+        naiveCustomerArray[idx] += (double) value;
+    }
+```
+
+Aby przeliczyć sumę czasów na czas średni potrzebuję dokonać każdej z tablic. Robię to za pomocą metod dzielących sumę elementów z danego indeksu (czyli po prostu `arr[idx]` bo na indeksie przechowuję już sumę) tablicy przez ilość powtórzeń każdej wielkości porcji oraz przeliczam wynik na sekundy (`/ 1000000000`):
+
+```java
+    public void avgNaiveProducer() {
+        for (int i = 0; i < this.M; i++) {
+            naiveProducerArray[i] = naiveProducerArray[i] / this.portionTimes / 1000000000;
+        }
+    }
+```
+
+Zapis danych do pliku wynikowego:
+
+```java
+    public void saveResults() throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writer = new PrintWriter("Lab04/Results/results.dat", "UTF-8");
+        writer.println("portion\tnaivProd\tnaivCons\tfairProd\tfairCons");
+        for (int i = 0; i < this.M; i++) {
+            writer.println(i + "\t" + naiveProducerArray[i] + "\t" + naiveCustomerArray[i] + "\t" + fairProducerArray[i] + "\t" + fairCustomerArray[i]);
+        }
+        writer.close();
+    }
+```
+
+#### Problem generowania wykresu
+
+Generowanie wykresów w Java to droga krzyżowa
+
+1. Stacja 1.: NullPointerException \
+… modlitwa do StackOverflow
+2. IllegalStateException \
+… modlitwa do StackOverflow
+3. …
+
+Z racji, że była 22:00 a ja chciałem iść spać rozsądnym rozwiązaniem było wypisanie danych w odpowiednim formacie do pliku tekstowego `results.dat`:
+
+```txt
+portion naivProd    naivCons    fairProd    fairCons
+1   1   6   0   0
+2   2   7   0   0
+3   5   9   0   0
+4   6   5   0   0
+5   8   4   0   0
+6   20  1   0   0
+7   23  4   0   0
+8   0   3   0   0
+9   -1  2   0   0
+```
+
+oraz użycie prostego (i przede wszystkim działającego!) gnuplota do stworzenia wykresu:
+
+```plt
+set terminal pngcairo enhanced font "arial,30" fontscale 1.0 size 2048, 2*768
+set key left top
+set title "Results\n"
+set xlabel "portions"
+set ylabel "time [s]"
+set grid
+set output 'results.png'
+plot "results.dat" using 1:2 every 100 title "naive producer" lt rgb "orange" with line , "results.dat" using 1:3 every 100 title "naive consumer" lt rgb "red" with line , "results.dat" using 1:4 every 100 title "fair producer" lt rgb "blue" with line , "results.dat" using 1:5 every 100 title "fair consumer" lt rgb "green" with line 
+```
+
+#### Raport
+
+Wykresy zostały sporządzone dla danych tesgowych:
+
+```java
+var M = 10000;
+var producerNumber = 100;
+var customerNumber = 100;
+var portionTimes = 5;
+```
+
+Wykres narysowany dla porcji co 100 jednostek (bardziej czytelny)
+![graph](Results/results_10000_every_100_row.png)
+
+Wykres narysowany dla każdej porcji (mniej czytelny)
+![graph](Results/results_10000_every_row.png)
+
+Z wykresów widać, że w wariancie sprawideliwym dla dużych wartości porcji czasy oczekiwania są znacznie mniejsze niż w wariancie naiwnym.
