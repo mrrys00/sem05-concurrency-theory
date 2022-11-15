@@ -89,6 +89,78 @@ Uwagi:
 
 ### Rozwiązanie
 
+#### Naive
+
+Tutaj nie trzeba wiele tłumaczyć:
+
+1. producent po prostu sprawdza czy może dodać do tablicy swoje produkty i jeśli nie to czeka
+
+    ```java
+    while (bufferSize - currentNumberOfElements < portion)
+        canUseBuffer.await();
+    ```
+
+2. jeśli może to dodaje
+
+    ```java
+    for (int i = currentNumberOfElements; i < currentNumberOfElements + portion; i++)
+        elements[i] = true;
+    ```
+
+3. konsument sprawdza czy porcja czekająca na buforze jest dla niego wystarczająca i jeśli nie to czeka
+
+    ```java
+    while (currentNumberOfElements < portion)
+        canUseBuffer.await();
+    ```
+
+4. jeśli może to konsumuje
+
+    ```java
+    for (int i = currentNumberOfElements - 1; i >= currentNumberOfElements - portion; i--)
+        elements[i] = false;
+    ```
+
+#### Fair
+
+W rozwiązaniu sprawiedliwym wprowadzamy dodatkowe warunki oraz flagi:
+
+```java
+    private final Condition firstProducer = lock.newCondition();
+    private final Condition producerRest = lock.newCondition();
+    private final Condition firstConsumer = lock.newCondition();
+    private final Condition consumerRest = lock.newCondition();
+
+    private boolean isWaitingProducer;
+    private boolean isWaitingConsumer;
+```
+
+Odpowiednio pierwszy w kolejce i czekający w kolejce proeucent oraz pierwszy w kolejce i czekający w kolejce konsument.
+
+Na przykładzie producenta:
+
+1. jeśli w kolejce jest oczekujący producent to czekamy
+
+    ```java
+    if (isWaitingProducer)
+        producerRest.await();
+    isWaitingProducer = true;
+    ```
+
+2. kiedy producent dostanie dostęp do bufora i zakończy operacje na buforze powiadamia czekającego producenta oraz pierwszego w kolejce konsumenta
+
+    ```java
+    isWaitingProducer = false;
+    producerRest.signal();
+    firstConsumer.signal();
+    ```
+
+3. reszta operacji pomiędzy działa tak samo jak w wersji `Naive`
+
+4. konsument działa analogicznie do producenta
+5. konsument działa analogicznie do producenta
+6. konsument działa analogicznie do producenta
+
 #### Problem zakończenia programu
 
 Bardzo częstą sytuacją byłoby, że program po prostu mógłby się nie zakończyć ponieważ konsument czekałby aż producent (który już nie działa) wrzuci do buforu następne porcje. Rozwiązanie, którego użyłem to stworzenie w buforze dwóch list dla producenta i konsumenta o rozmiarach `processTimes * M` i zakresie wartości `0..M`, gdzie `processTimes` to ilość powtórzeń danej wartości w liście a następnie "potasowanie" kolejności tych liczb:
@@ -167,7 +239,7 @@ Przchowywanie sumy na kolejnych indeksach tablicy:
     }
 ```
 
-Aby przeliczyć sumę czasów na czas średni potrzebuję dokonać każdej z tablic. Robię to za pomocą metod dzielących sumę elementów z danego indeksu (czyli po prostu `arr[idx]` bo na indeksie przechowuję już sumę) tablicy przez ilość powtórzeń każdej wielkości porcji oraz przeliczam wynik na sekundy (`/ 1000000000`):
+Aby przeliczyć sumę czasów na czas średni potrzebuję dokonać przeliczenia każdej z tablic. Robię to za pomocą metod dzielących sumę elementów z danego indeksu (czyli po prostu `arr[idx]` bo na indeksie przechowuję już sumę) tablicy przez ilość powtórzeń (`/ this.portionTimes`) każdej wielkości porcji oraz przeliczam wynik na sekundy (`/ 1000000000`):
 
 ```java
     public void avgNaiveProducer() {
@@ -245,4 +317,19 @@ Wykres narysowany dla porcji co 100 jednostek (bardziej czytelny)
 Wykres narysowany dla każdej porcji (mniej czytelny)
 ![graph](Results/results_10000_every_row.png)
 
-Z wykresów widać, że w wariancie sprawideliwym dla dużych wartości porcji czasy oczekiwania są znacznie mniejsze niż w wariancie naiwnym.
+Po zdobyciu dostępu do potężniejszej maszyny niż mój laptopik poprawiłem wykres dla nowych danych
+
+```java
+var M = 100000;
+var producerNumber = 1000;
+var customerNumber = 1000;
+var portionTimes = 30;
+```
+
+Wykres narysowany dla każdej porcji (bardziej pokazujący skalę niesprawiedliwości)
+![graph](Results/results_100000.png)
+
+Wykres narysowany co 1000 porcji (mniej pokazujący skalę niesprawiedliwości)
+![graph](Results/results_100000_1000.png)
+
+Z wykresów widać, że w wariancie sprawiedliwym dla dużych wartości porcji czasy oczekiwania są znacznie mniejsze niż w wariancie naiwnym.
