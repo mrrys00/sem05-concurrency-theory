@@ -6,26 +6,17 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MultithreadingExample",
+            "request": "launch",
+            "mainClass": "Lab05.Zad2.MultithreadingExample",
+            "projectName": "sem05-concurrency-theory_87f72959"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
-        // {
-        //     "type": "java",
-        //     "name": "Lab01 not sync",
-        //     "request": "launch",
-        //     "mainClass": "Lab01",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "not"
-        // },
-        // {
-        //     "type": "java",
-        //     "name": "Lab01 sync",
-        //     "request": "launch",
-        //     "mainClass": "Lab01",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "sync"
-        // },
         {
             "type": "java",
             "name": "Lab01 prod",
@@ -34,14 +25,6 @@
             "projectName": "sem05-concurrency-theory_87f72959",
             "args": "prod"
         },
-        // {
-        //     "type": "java",
-        //     "name": "Lab02",
-        //     "request": "launch",
-        //     "mainClass": "Lab02",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "bin"
-        // },
         {
             "type": "java",
             "name": "Lab02",
@@ -50,22 +33,6 @@
             "projectName": "sem05-concurrency-theory_87f72959",
             "args": "cnt"
         },
-        // {
-        //     "type": "java",
-        //     "name": "Lab03",
-        //     "request": "launch",
-        //     "mainClass": "Lab03.Lab03",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "prod"
-        // },
-        // {
-        //     "type": "java",
-        //     "name": "Lab03",
-        //     "request": "launch",
-        //     "mainClass": "Lab03.Lab03",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "prin"
-        // },
         {
             "type": "java",
             "name": "Lab03",
@@ -74,30 +41,6 @@
             "projectName": "sem05-concurrency-theory_87f72959",
             "args": "tabl"
         },
-        // {
-        //     "type": "java",
-        //     "name": "Lab04",
-        //     "request": "launch",
-        //     "mainClass": "Lab04.Lab04",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "stre"
-        // },
-        // {
-        //     "type": "java",
-        //     "name": "Lab04",
-        //     "request": "launch",
-        //     "mainClass": "Lab04.Lab04",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "naiv"
-        // },
-        // {
-        //     "type": "java",
-        //     "name": "Lab04",
-        //     "request": "launch",
-        //     "mainClass": "Lab04.Lab04",
-        //     "projectName": "sem05-concurrency-theory_87f72959",
-        //     "args": "fair"
-        // },
         {
             "type": "java",
             "name": "Lab04",
@@ -105,6 +48,14 @@
             "mainClass": "Lab04.Lab04",
             "projectName": "sem05-concurrency-theory_87f72959",
             "args": "comp"
+        },
+        {
+            "type": "java",
+            "name": "Launch Lab05",
+            "request": "launch",
+            "mainClass": "Lab05.Lab05",
+            "projectName": "sem05-concurrency-theory_87f72959",
+            "args": "mand"
         }
     ]
 }
