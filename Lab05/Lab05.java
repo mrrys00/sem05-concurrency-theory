@@ -98,12 +98,12 @@ public class Lab05 {
         }
 
         statistics.table();
-        // intel cores 4, threads 8
+        // intel cores 4, threads 8, 800x600, max iter 2137, zoom 412
         // [4.798440399E9, 1.624682400075806E8] partial results
         // [4.808465218E9, 2.2187682763821125E8] partial results
         // [4.865385843E9, 2.0782224450917628E8] partial results
 
         // AMD cored 6, threads 12
-        
+
     }
 }
