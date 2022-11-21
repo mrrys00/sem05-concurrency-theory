@@ -42,10 +42,6 @@ public class Lab05 {
     }
 
     private static void tasksEqualThreads(boolean print) throws InterruptedException, ExecutionException {
-        // https://www.intel.com/content/www/us/en/products/sku/208921/intel-core-i71165g7-processor-12m-cache-up-to-4-70-ghz-with-ipu/specifications.html
-        // https://www.amd.com/en/products/cpu/amd-ryzen-5-2600x
-        // int coresNumber = 6;
-        // int threadsNumber = 12;
         int tasksNumber = threadsNumber;
 
         TaskExecutor taskExecutor = new TaskExecutor(100, 100, width, height, threadsNumber);
@@ -55,9 +51,6 @@ public class Lab05 {
     }
 
     private static void tenTimesThreadsTasks(boolean print) throws InterruptedException, ExecutionException {
-        // int coresNumber = 6;
-        // int threadsNumber = 12;
-
         int tasksNumber = 10 * threadsNumber;
 
         TaskExecutor taskExecutor = new TaskExecutor(100, 100, width, height, threadsNumber);
@@ -67,9 +60,6 @@ public class Lab05 {
     }
 
     private static void taskPerPixel(boolean print) throws InterruptedException, ExecutionException {
-        // int coresNumber = 6;
-        // int threadsNumber = 12;
-
         int tasksNumber = width * height;
 
         TaskExecutor taskExecutor = new TaskExecutor(100, 100, width, height, threadsNumber);
@@ -98,19 +88,5 @@ public class Lab05 {
         }
 
         statistics.table();
-        // intel cores 4, threads 8, 800x600, max iter 2137, zoom 412
-        // [4.798440399E9, 1.624682400075806E8] partial results
-        // [4.808465218E9, 2.2187682763821125E8] partial results
-        // [4.865385843E9, 2.0782224450917628E8] partial results
-
-        // AMD cored 6, threads 12, 800x600, max iter 2137, zoom 412
-        // [1.32704879279E11, 5.043090670642407E9]
-        // [1.34107533049E11, 3.2203121183061423E9]
-        // [1.34626827839E11, 5.83832669813946E9]
-
-        // AMD cored 6, threads 12, 8000x6000, max iter 2137, zoom 412
-        // [5.2205512333E11, 1.1525024053319887E10]
-        // [5.11751416094E11, 1.3121283890759508E10]
-        // [5.17837301531E11, 1.0457912664957191E10]
     }
 }
