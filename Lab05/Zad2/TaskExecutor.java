@@ -20,8 +20,6 @@ public class TaskExecutor extends JFrame {
     private final double ZOOM = 412;
     private BufferedImage I;
 
-    // private int boundX;
-    // private int boundY;
     private int width;
     private int height;
 
@@ -29,8 +27,6 @@ public class TaskExecutor extends JFrame {
 
         super("Mandelbrot Set");
 
-        // this.boundX = boundX;
-        // this.boundY = boundY;
         this.width = width;
         this.height = height;
 
