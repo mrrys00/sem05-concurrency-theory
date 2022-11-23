@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MultithreadingExample",
+            "request": "launch",
+            "mainClass": "Lab05.Zad2.MultithreadingExample",
+            "projectName": "sem05-concurrency-theory_87f72959"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -98,13 +105,45 @@
         //     "projectName": "sem05-concurrency-theory_87f72959",
         //     "args": "fair"
         // },
+        // {
+        //     "type": "java",
+        //     "name": "Launch Lab05",
+        //     "request": "launch",
+        //     "mainClass": "Lab05.Lab05",
+        //     "projectName": "sem05-concurrency-theory_87f72959",
+        //     "args": "mand"
+        // },
+        // {
+        //     "type": "java",
+        //     "name": "Launch Lab05",
+        //     "request": "launch",
+        //     "mainClass": "Lab05.Lab05",
+        //     "projectName": "sem05-concurrency-theory_87f72959",
+        //     "args": "equa"
+        // },
+        // {
+        //     "type": "java",
+        //     "name": "Launch Lab05",
+        //     "request": "launch",
+        //     "mainClass": "Lab05.Lab05",
+        //     "projectName": "sem05-concurrency-theory_87f72959",
+        //     "args": "tent"
+        // },
+        // {
+        //     "type": "java",
+        //     "name": "Launch Lab05",
+        //     "request": "launch",
+        //     "mainClass": "Lab05.Lab05",
+        //     "projectName": "sem05-concurrency-theory_87f72959",
+        //     "args": "pixe"
+        // },
         {
             "type": "java",
-            "name": "Lab04",
+            "name": "Launch Lab05",
             "request": "launch",
-            "mainClass": "Lab04.Lab04",
+            "mainClass": "Lab05.Lab05",
             "projectName": "sem05-concurrency-theory_87f72959",
-            "args": "comp"
+            "args": "stat"
         }
     ]
 }

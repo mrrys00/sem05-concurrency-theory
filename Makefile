@@ -21,3 +21,9 @@ archiveLab04:
 	mkdir -p archives/
 	zip -r archives/archiveLab04.zip Lab04/
 	tar czvf archives/archiveLab04.tar.gz Lab04/
+
+.PHONY: archiveLab05
+archiveLab05:
+	mkdir -p archives/
+	zip -r archives/archiveLab05.zip Lab05/
+	tar czvf archives/archiveLab05.tar.gz Lab05/
