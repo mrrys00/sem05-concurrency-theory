@@ -170,3 +170,16 @@ Zadania
 
     Czas obliczeń można zwiększać manipulując parametrami problemu, np. liczbą iteracji (MAX_ITER). Czas należy zmierzyć 10 razy dla tego samego przypadku, policzyć średnią i odchylenie standardowe. Wyniki przedstawic w tabelce, znaleźć najszybszą konfigurację.
 
+### Lab06
+
+[Strona laborek](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab6/)
+
+Zadania
+
+1. Uruchom kilkakrotnie następujący [program](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab6/node1.js).
+2. Wymuszanie sekwencyjnego wykonania:
+    * [Rozwiazanie 1](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab6/node1a.js)
+    * [Rozwiazanie 2](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab6/node1b.js)
+3. Zadanie 1a: Zaimplementuj funkcje loop, wg instrukcji w pliku z Rozwiazaniem 2.
+4. Zadanie 1b: wykorzystaj funkcję [waterfall](https://caolan.github.io/async/v3/docs.html#waterfall) biblioteki [async](https://github.com/caolan/async).
+5. Zadanie 2 Zaimplementuj funkcję inparallel wg instrukcji z pliku [node2.js](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab6/node2.js)
