@@ -183,3 +183,53 @@ Zadania
 3. Zadanie 1a: Zaimplementuj funkcje loop, wg instrukcji w pliku z Rozwiazaniem 2.
 4. Zadanie 1b: wykorzystaj funkcję [waterfall](https://caolan.github.io/async/v3/docs.html#waterfall) biblioteki [async](https://github.com/caolan/async).
 5. Zadanie 2 Zaimplementuj funkcję inparallel wg instrukcji z pliku [node2.js](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab6/node2.js)
+
+### Lab07
+
+[Strona laborek](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab7/)
+
+Zadania
+
+Zadanie polega na dokończeniu implementacji problemu pięciu filozofów w node.js. Wzięcie widelca przez filozofa jest możliwe tylko wtedy, jeśli jest on wolny (co zapisujemy za pomocą zmiennej stan).
+
+[Szkielet](https://home.agh.edu.pl/~kzajac/dydakt/tw/lab7/phil5-szkielet.js) do zadania
+
+1. Dokończ implementację funkcji podnoszenia widelca (Fork.acquire).
+2. Zaimplementuj "naiwny" algorytm (każdy filozof podnosi najpierw lewy, potem prawy widelec, itd.). Zaobserwuj deadlock (zakleszczenie, blokadę).
+3. Zaimplementuj rozwiązanie asymetryczne (poprawne): filozofowie z nieparzystym numerem najpierw podnoszą widelec lewy, z parzystym -- prawy.
+4. Zaimplementuj rozwiązanie z lokajem (poprawne, opisane jako "Conductor solution" w wikipedii). Lokaj nalezy zaimplementować podobnie jak widelec, stan lokaja powinien pamietac liczbę filozofów dopuszczonych do rywalizacji o widelce.
+
+Nie zrobione :smiley: ~~Uruchom eksperymenty dla różnej liczby filozofów i dla poprawnych wariantów implementacji zmierz czas oczekiwania jako sumę milisekund, o jakie filozof musiał opóźniać wzięcie widelca i uzyskanie zgody lokaja w algorytmie BEB. Wyniki przedstaw na wykresach.~~
+
+**Implementacja acquire**
+
+```txt
+zaimplementuj funkcje acquire, tak by korzystala z algorytmu BEB
+(http://pl.wikipedia.org/wiki/Binary_Exponential_Backoff), tzn:
+1. przed pierwsza proba podniesienia widelca Filozof odczekuje 1ms
+2. gdy proba jest nieudana, zwieksza czas oczekiwania dwukrotnie i ponawia probe itd.
+```
+
+**Naive**
+
+```txt
+zaimplementuj rozwiazanie naiwne
+kazdy filozof powinien 'count' razy wykonywac cykl
+podnoszenia widelcow -- jedzenia -- zwalniania widelcow
+```
+
+**Asymetric**
+
+```txt
+zaimplementuj rozwiazanie asymetryczne
+kazdy filozof powinien 'count' razy wykonywac cykl
+podnoszenia widelcow -- jedzenia -- zwalniania widelcow
+```
+
+**Conductor**
+
+```txt
+zaimplementuj rozwiazanie z kelnerem
+kazdy filozof powinien 'count' razy wykonywac cykl
+podnoszenia widelcow -- jedzenia -- zwalniania widelcow
+```

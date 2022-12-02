@@ -33,3 +33,9 @@ archiveLab06:
 	mkdir -p archives/
 	zip -r archives/archiveLab06.zip Lab06/Zad1a.js Lab06/Zad1b.js Lab06/Zad2.js
 	tar czvf archives/archiveLab06.tar.gz Lab06/Zad1a.js Lab06/Zad1b.js Lab06/Zad2.js
+
+.PHONY: archiveLab07
+archiveLab07:
+	mkdir -p archives/
+	zip -r archives/archiveLab07.zip Lab07/
+	tar czvf archives/archiveLab07.tar.gz Lab07/
