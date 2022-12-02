@@ -199,7 +199,7 @@ Zadanie polega na dokończeniu implementacji problemu pięciu filozofów w node.
 3. Zaimplementuj rozwiązanie asymetryczne (poprawne): filozofowie z nieparzystym numerem najpierw podnoszą widelec lewy, z parzystym -- prawy.
 4. Zaimplementuj rozwiązanie z lokajem (poprawne, opisane jako "Conductor solution" w wikipedii). Lokaj nalezy zaimplementować podobnie jak widelec, stan lokaja powinien pamietac liczbę filozofów dopuszczonych do rywalizacji o widelce.
 
-Uruchom eksperymenty dla różnej liczby filozofów i dla poprawnych wariantów implementacji zmierz czas oczekiwania jako sumę milisekund, o jakie filozof musiał opóźniać wzięcie widelca i uzyskanie zgody lokaja w algorytmie BEB. Wyniki przedstaw na wykresach.
+Nie zrobione :smiley: ~~Uruchom eksperymenty dla różnej liczby filozofów i dla poprawnych wariantów implementacji zmierz czas oczekiwania jako sumę milisekund, o jakie filozof musiał opóźniać wzięcie widelca i uzyskanie zgody lokaja w algorytmie BEB. Wyniki przedstaw na wykresach.~~
 
 **Implementacja acquire**
 
