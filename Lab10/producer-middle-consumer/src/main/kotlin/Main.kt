@@ -53,8 +53,8 @@ fun CoroutineScope.intermediar(inside: ReceiveChannel<String>, outside: SendChan
         while (true) {
             delay(500)
             select<Unit> {
-                inside.onReceive { value -> product = value }
-                outside.onSend("processed $product") { }
+                inside.onReceive { value -> product = value }   // dobra, jednak trochę skurwione - niby przekazuje produkt ale zjebany
+                outside.onSend("processed $product") { }    // trzeba wymyślić sprytną metodę jak uzyskać tą wartość z poprzedniej wiadomości i wpisać do następnej
             }
             println("process $product by $name")
         }
