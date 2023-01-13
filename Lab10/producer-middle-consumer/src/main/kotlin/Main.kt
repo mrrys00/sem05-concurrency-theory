@@ -6,10 +6,6 @@ val channels = mutableListOf<Channel<String>>()
 val customerChannel = Channel<String>()
 const val intermediariesNumber = 7;
 
-fun myCopy(num: Int): Int {
-    return num
-}
-
 fun main() = runBlocking<Unit> {
 
     for (id in 0 until intermediariesNumber) {
