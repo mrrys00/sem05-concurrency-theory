@@ -4,7 +4,7 @@ import kotlinx.coroutines.selects.select
 
 val channels = mutableListOf<Channel<String>>()
 val customerChannel = Channel<String>()
-val intermediariesNumber = 7;
+const val intermediariesNumber = 7;
 
 fun myCopy(num: Int): Int {
     return num
@@ -12,7 +12,7 @@ fun myCopy(num: Int): Int {
 
 fun main() = runBlocking<Unit> {
 
-    for (id in 0..intermediariesNumber - 1) {
+    for (id in 0 until intermediariesNumber) {
         val channel = Channel<String>()
         channels.add(channel);
     }
@@ -21,7 +21,7 @@ fun main() = runBlocking<Unit> {
         producer(channels)
     }
 
-    for (chanIdx in 0..channels.size - 1) {
+    for (chanIdx in 0 until channels.size) {
         launch {
             intermediar(channels[chanIdx], customerChannel, chanIdx)
         }
@@ -38,7 +38,7 @@ fun CoroutineScope.producer(outChannels: MutableList<Channel<String>>) = produce
     while (true) {
         delay(100)
         select<String> {
-            outChannels.get((0..intermediariesNumber - 1).random()).onSend("product: $productNumber") {
+            outChannels[(0 until intermediariesNumber).random()].onSend("product: $productNumber") {
                 it.toString()
             }
         }
@@ -49,14 +49,20 @@ fun CoroutineScope.producer(outChannels: MutableList<Channel<String>>) = produce
 
 fun CoroutineScope.intermediar(inside: ReceiveChannel<String>, outside: SendChannel<String>, name: Int) =
     produce<String> {
-        var product: String = ""
+        val batch = mutableListOf<String>()
         while (true) {
-            delay(500)
             select<Unit> {
-                inside.onReceive { value -> product = value }   // dobra, jednak trochę skurwione - niby przekazuje produkt ale zjebany
-                outside.onSend("processed $product") { }    // trzeba wymyślić sprytną metodę jak uzyskać tą wartość z poprzedniej wiadomości i wpisać do następnej
+                inside.onReceive { value ->
+                    batch.add(value)
+                    println("process $value by $name")
+                    delay(500)
+                }
+                if (batch.isNotEmpty())  {
+                    val prod = batch[0]
+                    outside.onSend("processed $prod") { }
+                    batch.clear()
+                }
             }
-            println("process $product by $name")
         }
     }
 
